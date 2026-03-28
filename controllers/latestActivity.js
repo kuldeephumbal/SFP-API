@@ -3,7 +3,8 @@ const LatestActivity = require('../models/latestActivity');
 // Get all latest activities
 exports.getLatestActivities = async (req, res) => {
     try {
-        const activities = await LatestActivity.find().sort({ createdAt: -1 });
+        const activities = await LatestActivity.find().select('-likedBy').sort({ createdAt: -1 });
+        console.log(`Fetched ${activities.length} latest activities`);
         res.status(200).json(activities);
     } catch (error) {
         console.error('Error fetching latest activities:', error);
@@ -14,7 +15,7 @@ exports.getLatestActivities = async (req, res) => {
 // Get single latest activity by ID
 exports.getLatestActivityById = async (req, res) => {
     try {
-        const activity = await LatestActivity.findById(req.params.id);
+        const activity = await LatestActivity.findById(req.params.id).select('-likedBy');
         if (!activity) {
             return res.status(404).json({ message: 'Latest activity not found' });
         }
@@ -106,5 +107,65 @@ exports.deleteLatestActivity = async (req, res) => {
     } catch (error) {
         console.error('Error deleting latest activity:', error);
         res.status(500).json({ message: 'Failed to delete latest activity', error: error.message });
+    }
+};
+
+// Toggle like for an activity
+exports.toggleLike = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || 'anonymous';
+        
+        console.log(`[toggleLike] ID: ${id}, User: ${userId}`);
+
+        const activity = await LatestActivity.findById(id);
+
+        if (!activity) {
+            console.warn(`[toggleLike] Activity NOT FOUND for ID: ${id}`);
+            return res.status(404).json({ message: 'Activity not found' });
+        }
+
+        // Initialize likes and likedBy if they don't exist
+        if (activity.likes === undefined) activity.likes = 0;
+        if (!activity.likedBy) activity.likedBy = [];
+
+        const likedIndex = activity.likedBy.indexOf(userId);
+
+        if (likedIndex > -1) {
+            // Unlike: Remove user ID from array and decrement count
+            activity.likedBy.splice(likedIndex, 1);
+            activity.likes = Math.max(0, activity.likes - 1);
+            await activity.save();
+            return res.status(200).json({ message: 'Unliked successfully', likes: activity.likes });
+        } else {
+            // Like: Add user ID to array and increment count
+            activity.likedBy.push(userId);
+            activity.likes = (activity.likes || 0) + 1;
+            await activity.save();
+            return res.status(200).json({ message: 'Liked successfully', likes: activity.likes });
+        }
+    } catch (error) {
+        console.error('Error toggling like:', error);
+        res.status(500).json({ message: 'Failed to toggle like', error: error.message });
+    }
+};
+
+// Get all IDs of activities liked by the current user
+exports.getLikedActivities = async (req, res) => {
+    try {
+        const userId = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || 'anonymous';
+
+        // Find matches in LatestActivity
+        const latestLiked = await LatestActivity.find({ likedBy: userId }, '_id').lean();
+
+        const allLikedIds = (latestLiked || []).map(a => String(a._id));
+
+        res.status(200).json(allLikedIds);
+    } catch (error) {
+        console.error('Error fetching liked activities:', error);
+        res.status(500).json({
+            message: 'Failed to fetch liked activities',
+            error: error.message
+        });
     }
 };

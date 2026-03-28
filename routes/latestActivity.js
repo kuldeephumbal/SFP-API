@@ -6,8 +6,22 @@ const {
     getLatestActivityById,
     createLatestActivity,
     updateLatestActivity,
-    deleteLatestActivity
+    deleteLatestActivity,
+    toggleLike,
+    getLikedActivities
 } = require('../controllers/latestActivity');
+
+/**
+ * @swagger
+ * /api/latest-activity/liked-ids:
+ *   get:
+ *     summary: Get all IDs liked by the current user
+ *     tags: [LatestActivity]
+ *     responses:
+ *       200:
+ *         description: List of liked IDs
+ */
+router.get('/liked-ids', getLikedActivities);
 
 /**
  * @swagger
@@ -137,5 +151,24 @@ router.put('/:id', latestActivityUpload.single('image'), updateLatestActivity);
  *         description: Latest activity not found
  */
 router.delete('/:id', deleteLatestActivity);
+/**
+ * @swagger
+ * /api/latest-activity/like/{id}:
+ *   post:
+ *     summary: Like/Unlike an activity
+ *     tags: [LatestActivity]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Toggled like successfully
+ *       404:
+ *         description: Activity not found
+ */
+router.post('/like/:id', toggleLike);
 
 module.exports = router;

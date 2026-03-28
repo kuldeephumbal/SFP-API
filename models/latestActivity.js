@@ -10,6 +10,14 @@ const latestActivitySchema = new mongoose.Schema(
         photo: {
             type: String,
             required: true
+        },
+        likes: {
+            type: Number,
+            default: 0
+        },
+        likedBy: {
+            type: [String], // Store IP or session identifiers
+            default: []
         }
     },
     {
