@@ -26,22 +26,23 @@ const uploadRoutes = require('./routes/upload');
 const dashboardRoutes = require('./routes/dashboard');
 
 // Ensure upload directories exist
+const UPLOAD_ROOT = process.env.UPLOAD_PATH;
 const uploadDirs = [
-    'uploads',
-    'uploads/slider',
-    'uploads/members',
-    'uploads/latest-activity',
-    'uploads/gallery',
-    'uploads/events',
-    'uploads/crowdfunding',
-    'uploads/problems',
-    'uploads/projects',
-    'uploads/donations',
-    'uploads/member-applications'
+    '',
+    'slider',
+    'members',
+    'latest-activity',
+    'gallery',
+    'events',
+    'crowdfunding',
+    'problems',
+    'projects',
+    'donations',
+    'member-applications'
 ];
 
 uploadDirs.forEach(dir => {
-    const dirPath = path.join(__dirname, dir);
+    const dirPath = path.join(UPLOAD_ROOT, dir);
     if (!fs.existsSync(dirPath)) {
         fs.mkdirSync(dirPath, { recursive: true });
     }
@@ -54,8 +55,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Server static files from uploads directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+// Server static files from persistent uploads directory
+app.use('/uploads', express.static(UPLOAD_ROOT, {
     setHeaders: (res, path) => {
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET');

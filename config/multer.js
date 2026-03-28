@@ -1,10 +1,12 @@
 const multer = require('multer');
 const path = require('path');
 
+const UPLOAD_ROOT = process.env.UPLOAD_PATH || path.join(__dirname, '../uploads');
+
 // Slider storage
 const sliderStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads/slider'));
+        cb(null, path.join(UPLOAD_ROOT, 'slider'));
     },
     filename: function (req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -14,7 +16,7 @@ const sliderStorage = multer.diskStorage({
 // Member storage
 const memberStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads/members'));
+        cb(null, path.join(UPLOAD_ROOT, 'members'));
     },
     filename: function (req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -24,7 +26,7 @@ const memberStorage = multer.diskStorage({
 // Latest Activity storage
 const latestActivityStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads/latest-activity'));
+        cb(null, path.join(UPLOAD_ROOT, 'latest-activity'));
     },
     filename: function (req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -34,7 +36,7 @@ const latestActivityStorage = multer.diskStorage({
 // Gallery storage
 const galleryStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads/gallery'));
+        cb(null, path.join(UPLOAD_ROOT, 'gallery'));
     },
     filename: function (req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -44,7 +46,7 @@ const galleryStorage = multer.diskStorage({
 // Upcoming Event storage
 const upcomingEventStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads/events'));
+        cb(null, path.join(UPLOAD_ROOT, 'events'));
     },
     filename: function (req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -54,7 +56,7 @@ const upcomingEventStorage = multer.diskStorage({
 // CrowdFunding storage
 const crowdFundingStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads/crowdfunding'));
+        cb(null, path.join(UPLOAD_ROOT, 'crowdfunding'));
     },
     filename: function (req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -64,7 +66,7 @@ const crowdFundingStorage = multer.diskStorage({
 // Problem Raised storage
 const problemRaisedStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads/problems'));
+        cb(null, path.join(UPLOAD_ROOT, 'problems'));
     },
     filename: function (req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -74,7 +76,7 @@ const problemRaisedStorage = multer.diskStorage({
 // Our Project storage
 const ourProjectStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads/projects'));
+        cb(null, path.join(UPLOAD_ROOT, 'projects'));
     },
     filename: function (req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -84,7 +86,7 @@ const ourProjectStorage = multer.diskStorage({
 // Donation storage
 const donationStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads/donations'));
+        cb(null, path.join(UPLOAD_ROOT, 'donations'));
     },
     filename: function (req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -94,7 +96,7 @@ const donationStorage = multer.diskStorage({
 // Member Application storage
 const memberApplicationStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads/member-applications'));
+        cb(null, path.join(UPLOAD_ROOT, 'member-applications'));
     },
     filename: function (req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -104,7 +106,7 @@ const memberApplicationStorage = multer.diskStorage({
 // Background image storage
 const backgroundStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../uploads'));
+        cb(null, UPLOAD_ROOT);
     },
     filename: function (req, file, cb) {
         cb(null, `background-${Date.now()}-${file.originalname}`);
