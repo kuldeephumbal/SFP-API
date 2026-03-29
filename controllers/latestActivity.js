@@ -4,7 +4,6 @@ const LatestActivity = require('../models/latestActivity');
 exports.getLatestActivities = async (req, res) => {
     try {
         const activities = await LatestActivity.find().select('-likedBy').sort({ createdAt: -1 });
-        console.log(`Fetched ${activities.length} latest activities`);
         res.status(200).json(activities);
     } catch (error) {
         console.error('Error fetching latest activities:', error);
